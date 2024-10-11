@@ -9,42 +9,62 @@ public class agarrar : MonoBehaviour
     private AudioSource audioSource;
     private XRGrabInteractable grabInteractable;
 
-    public GameObject controlCanvas;
+    public GameObject leftControlCanvas;  // Canvas para el antebrazo izquierdo
+    public GameObject rightControlCanvas; // Canvas para el antebrazo derecho
 
-    public Button pauseResumeButton;
-    public Button speedUpButton;
-    public Button slowDownButton;
+    public GameObject rayoDerecho;
+    public GameObject rayoIzquierdo;
+
+    // Botones para el canvas izquierdo
+    public Button leftPauseResumeButton;
+    public Button leftSpeedUpButton;
+    public Button leftSlowDownButton;
+
+    // Botones para el canvas derecho
+    public Button rightPauseResumeButton;
+    public Button rightSpeedUpButton;
+    public Button rightSlowDownButton;
 
     private bool isPaused = false;
-
-    // Referencias a los XR Ray Interactors de las manos
-    public XRRayInteractor rightHandRayInteractor;
-    public XRRayInteractor leftHandRayInteractor;
-
-    private XRRayInteractor currentRayInteractor;  // Guarda el Ray Interactor de la mano que agarra el objeto
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-
         grabInteractable = GetComponent<XRGrabInteractable>();
 
         grabInteractable.selectEntered.AddListener(OnGrab);
         grabInteractable.selectExited.AddListener(OnRelease);
 
-        if (controlCanvas != null)
+        // Desactivar ambos canvases al inicio
+        if (leftControlCanvas != null)
         {
-            controlCanvas.SetActive(false);
+            leftControlCanvas.SetActive(false);
         }
 
-        if (pauseResumeButton != null)
-            pauseResumeButton.onClick.AddListener(TogglePauseResume);
+        if (rightControlCanvas != null)
+        {
+            rightControlCanvas.SetActive(false);
+        }
 
-        if (speedUpButton != null)
-            speedUpButton.onClick.AddListener(SpeedUpAudio);
+        // Configurar botones para el canvas izquierdo
+        if (leftPauseResumeButton != null)
+            leftPauseResumeButton.onClick.AddListener(TogglePauseResume);
 
-        if (slowDownButton != null)
-            slowDownButton.onClick.AddListener(SlowDownAudio);
+        if (leftSpeedUpButton != null)
+            leftSpeedUpButton.onClick.AddListener(SpeedUpAudio);
+
+        if (leftSlowDownButton != null)
+            leftSlowDownButton.onClick.AddListener(SlowDownAudio);
+
+        // Configurar botones para el canvas derecho
+        if (rightPauseResumeButton != null)
+            rightPauseResumeButton.onClick.AddListener(TogglePauseResume);
+
+        if (rightSpeedUpButton != null)
+            rightSpeedUpButton.onClick.AddListener(SpeedUpAudio);
+
+        if (rightSlowDownButton != null)
+            rightSlowDownButton.onClick.AddListener(SlowDownAudio);
     }
 
     private void OnGrab(SelectEnterEventArgs args)
@@ -54,27 +74,27 @@ public class agarrar : MonoBehaviour
             audioSource.Play();
         }
 
-        if (controlCanvas != null)
-        {
-            controlCanvas.SetActive(true);
-        }
-
-        // Identificar cuál mano está agarrando el objeto (derecha o izquierda)
+        // Activar el canvas correspondiente según la mano que agarra el objeto
         XRBaseInteractor interactor = args.interactorObject as XRBaseInteractor;
-        
-        if (interactor == rightHandRayInteractor)
-        {
-            currentRayInteractor = rightHandRayInteractor;
-        }
-        else if (interactor == leftHandRayInteractor)
-        {
-            currentRayInteractor = leftHandRayInteractor;
-        }
 
-        // Activar el rayo de la mano que está agarrando el objeto
-        if (currentRayInteractor != null)
+        if (interactor != null)
         {
-            currentRayInteractor.gameObject.SetActive(true);
+            if (interactor.CompareTag("LeftHand"))
+            {
+                if (leftControlCanvas != null)
+                {
+                    leftControlCanvas.SetActive(true);
+                    rayoDerecho.SetActive(true);
+                }
+            }
+            else if (interactor.CompareTag("RightHand"))
+            {
+                if (rightControlCanvas != null)
+                {
+                    rightControlCanvas.SetActive(true);
+                    rayoIzquierdo.SetActive(true);
+                }
+            }
         }
     }
 
@@ -85,16 +105,17 @@ public class agarrar : MonoBehaviour
             audioSource.Stop();
         }
 
-        if (controlCanvas != null)
+        // Desactivar ambos canvases al soltar
+        if (leftControlCanvas != null)
         {
-            controlCanvas.SetActive(false);
+            leftControlCanvas.SetActive(false);
+            rayoDerecho.SetActive(false);
         }
 
-        // Desactivar el rayo cuando el objeto es soltado
-        if (currentRayInteractor != null)
+        if (rightControlCanvas != null)
         {
-            currentRayInteractor.gameObject.SetActive(false);
-            currentRayInteractor = null;  // Limpiar la referencia
+            rightControlCanvas.SetActive(false);
+            rayoIzquierdo.SetActive(false);
         }
     }
 
@@ -104,7 +125,7 @@ public class agarrar : MonoBehaviour
         {
             if (isPaused)
             {
-                audioSource.Play();
+                audioSource.UnPause();
                 isPaused = false;
             }
             else
@@ -119,7 +140,7 @@ public class agarrar : MonoBehaviour
     {
         if (audioSource != null)
         {
-            audioSource.pitch = Mathf.Clamp(audioSource.pitch + 0.1f, 0.1f, 3f);  // Incrementa el pitch hasta un máximo de 3x
+            audioSource.pitch = Mathf.Clamp(audioSource.pitch + 0.1f, 0.1f, 3f);
         }
     }
 
@@ -127,7 +148,7 @@ public class agarrar : MonoBehaviour
     {
         if (audioSource != null)
         {
-            audioSource.pitch = Mathf.Clamp(audioSource.pitch - 0.1f, 0.1f, 3f);  // Decrementa el pitch hasta un mínimo de 0.1x
+            audioSource.pitch = Mathf.Clamp(audioSource.pitch - 0.1f, 0.1f, 3f);
         }
     }
 
