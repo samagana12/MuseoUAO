@@ -6,6 +6,8 @@ TagManager:
   tags:
   - LeftHand
   - RightHand
+  - Mano
+  - Baqueta
   layers:
   - Default
   - TransparentFX
