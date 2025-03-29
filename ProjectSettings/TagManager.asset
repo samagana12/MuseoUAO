@@ -8,6 +8,20 @@ TagManager:
   - RightHand
   - Mano
   - Baqueta
+  - Bienvenida
+  - Tutorial
+  - Metafora
+  - Entrada
+  - Rojo1
+  - Rojo2
+  - Naranja1
+  - Naranja2
+  - Afro1
+  - Verde1
+  - Verde2
+  - Marimba
+  - Jarron1
+  - Jarron2
   layers:
   - Default
   - TransparentFX
@@ -15,7 +29,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Portal
   - 
   - 
   - 

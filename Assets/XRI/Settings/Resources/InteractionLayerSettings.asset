@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LayerNames:
   - Default
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Mask1
+  - Mask2
+  - Mask3
+  - Canastero1
+  - Canastero2
+  - Cojito
+  - Hand UI
+  - Jarron1
+  - Jarron2
   - 
   - 
   - 
